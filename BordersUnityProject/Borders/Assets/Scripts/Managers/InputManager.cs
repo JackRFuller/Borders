@@ -4,21 +4,40 @@ using System.Collections;
 public class InputManager : MonoBehaviour {
 
     private CoreShapeController cscScript;
+    private bool shapeFound;
 
 	// Use this for initialization
 	void Start () {
 
-        cscScript = GameObject.FindGameObjectWithTag("Player").GetComponent<CoreShapeController>();	
-	}	
+        
+	}
+    
+    public void FindCoreShape(GameObject coreShape)
+    {
+        cscScript = coreShape.GetComponent<CoreShapeController>();
+
+        if(cscScript != null)
+        {
+            shapeFound = true;
+        }
+    }	
 
     public void StartRotation(string _direction)
     {
-        cscScript.rotDirection = _direction;
-        cscScript.rotating = true;
+        if (shapeFound)
+        {
+            cscScript.rotDirection = _direction;
+            cscScript.rotating = true;
+        }
+       
     }
 
     public void EndRotation()
     {
-        cscScript.rotating = false;
+        if (shapeFound)
+        {
+            cscScript.rotating = false;
+        }
+        
     }
 }

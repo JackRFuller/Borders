@@ -8,49 +8,62 @@ public class ScoreManager : MonoBehaviour {
     private UIManager uiScript;
 
     //Score Timer
-    private int score = 0;
+    private float score = 0;
     private float timer = 1;
 
-	// Use this for initialization
-	void Start () {
+    private bool setupData;
 
-        InitialiseData();
-	
-	}
+    //Lerping Data
+    private float timeTakenDuringLerp = 0.5F;
+    private bool isLerping;
+    private float startValue;
+    private float endValue;
 
-    void InitialiseData()
+    private float timeStartedLerping;   
+
+    public void InitialiseData(LevelManager _lmScript, UIManager _uiScript)
     {
-        lmScript = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-        uiScript = GameObject.Find("UIManager").GetComponent<UIManager>();
+        if(lmScript == null && uiScript == null)
+        {
+            lmScript = _lmScript;
+            uiScript = _uiScript;
+
+            setupData = true;
+        }
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        if(lmScript.currentGameState == LevelManager.gameState.InProgress)
+        if (isLerping)
         {
-            AddOnScore();
+            LerpScore();
         }
-	
 	}
-
-    void AddOnScore()
-    {
-        timer -= Time.deltaTime;
-
-        if(timer <= 0)
-        {
-            score++;
-            timer = 1;
-        }
-
-        uiScript.ScoreUpdate(score);
-    }
 
     public void AddOnPoints(int _pointsToAddOn)
     {
-        score += _pointsToAddOn;
+        isLerping = true;
+        timeStartedLerping = Time.time;
 
+        startValue = score;
+        endValue = score + _pointsToAddOn;
+    } 
+
+    void LerpScore()
+    {
+        float _timeSinceStarted = Time.time - timeStartedLerping;
+        float percentageComplete = _timeSinceStarted / timeTakenDuringLerp;
+
+        score = Mathf.Lerp(startValue, endValue, percentageComplete);
         uiScript.ScoreUpdate(score);
+
+        if(percentageComplete >= 1.0F)
+        {
+            isLerping = false;
+        }
     }
+
+    
 }

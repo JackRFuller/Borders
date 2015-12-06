@@ -4,14 +4,20 @@ using System.Collections;
 
 public class CoreObjectSelectMenu : ScrollingMenu  {
 
+    private LevelSetupManager lsmScript;
+
+    private int shapeCategory;
+    private int coreObject;
+
 	public GameObject[] coreShapes;
 	public int coreShapeID;
+    private bool setNewObject;
 
 	// Use this for initialization
 	void Start () {
 
+        lsmScript = GameObject.Find("LevelSetupManager").GetComponent<LevelSetupManager>();
 		coreShapeID = 0;
-
         InitialiseValues();
 	
 	}
@@ -19,8 +25,22 @@ public class CoreObjectSelectMenu : ScrollingMenu  {
 	// Update is called once per frame
 	void Update () {
 
-        MoveItems();	
+        MoveItems();
+
+        if (objectChanged)
+        {
+            coreObject = objectID;
+
+            SetNewObject();
+
+            objectChanged = false;
+        }      
 	}
+
+    void SetNewObject()
+    {
+        lsmScript.SetCoreObject(shapeCategory, objectID);       
+    }
 
 	public void ShapeUpdate(int _objectID)
 	{
@@ -34,7 +54,14 @@ public class CoreObjectSelectMenu : ScrollingMenu  {
 		{
 			scrollingItems[i] = GetShape(i);
 		}
-	}
+
+        if(shapeCategory != coreShapeID)
+        {
+            shapeCategory = coreShapeID;
+
+            SetNewObject();
+        }
+    }
 
 	GameObject GetShape(int _shapeID)
 	{

@@ -19,6 +19,13 @@ public class CoreShapeController : MonoBehaviour {
     [SerializeField] private float shrinkRate;
     [SerializeField] private float minSize;
 
+    //LerpingVariables
+    private float timeTakenDuringLerp = 0.5F;
+    private bool isLerping;
+    private Vector3 startSize;
+    private Vector3 endSize;
+    private float timeStartedLerping;
+
 	// Use this for initialization
 	void Start () {
 
@@ -29,7 +36,7 @@ public class CoreShapeController : MonoBehaviour {
     /// <summary>
     /// Setups the core data to start the level
     /// </summary>
-    void InitialiseLevel()
+    public void InitialiseLevel()
     {
         minSize = transform.localScale.x / 2;
         lmScript = GameObject.Find("LevelManager").GetComponent<LevelManager>();
@@ -47,6 +54,11 @@ public class CoreShapeController : MonoBehaviour {
 
             GrowShape();
         }
+
+        if (isLerping)
+        {
+            LerpShrinkage();
+        }
 	}
 
     /// <summary>
@@ -54,8 +66,6 @@ public class CoreShapeController : MonoBehaviour {
     /// </summary>
     void GrowShape()
     {
-        
-
         Vector3 _newSize = new Vector3(transform.localScale.x + growthRate,
                                         transform.localScale.y + growthRate,
                                         transform.localScale.z + growthRate);
@@ -70,14 +80,27 @@ public class CoreShapeController : MonoBehaviour {
     {
         if(transform.localScale.x >= minSize)
         {
-            Vector3 _newSize = new Vector3(transform.localScale.x - shrinkRate,
+            isLerping = true;
+            timeStartedLerping = Time.time;
+
+            startSize = transform.localScale;
+            endSize = new Vector3(transform.localScale.x - shrinkRate,
                                            transform.localScale.y - shrinkRate,
-                                           transform.localScale.z - shrinkRate);
+                                           transform.localScale.z - shrinkRate);            
+        }       
+    }
 
-            transform.localScale = _newSize;
+    void LerpShrinkage()
+    {
+        float _timeSinceStarted = Time.time - timeStartedLerping;
+        float _percentageComplete = _timeSinceStarted / timeTakenDuringLerp;
+
+        transform.localScale = Vector3.Lerp(startSize, endSize, _percentageComplete);
+
+        if(_percentageComplete >= 1.0F)
+        {
+            isLerping = false;
         }
-
-       
     }
 
     /// <summary>

@@ -22,6 +22,11 @@ public class LevelManager : MonoBehaviour {
 	
 	}
 
+    public void StartLevel()
+    {
+        currentGameState = gameState.InProgress;
+    }
+
     public void GameOver()
     {
         currentGameState = gameState.GameOver;

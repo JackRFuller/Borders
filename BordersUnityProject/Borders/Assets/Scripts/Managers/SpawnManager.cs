@@ -21,28 +21,21 @@ public class SpawnManager : MonoBehaviour {
     private bool spawnPellets = true;
     private List<Color> coreShapeColors = new List<Color>();
 
-    
-
-	// Use this for initialization
-	void Start () {
-
-        InitialiseData();
-	}
-
-    void InitialiseData()
+    public void InitialiseData()
     {
-       
-
         GameObject[] _coreShapes = GameObject.FindGameObjectsWithTag("CoreShape");
 
+        //Pick Colour From the Core Shaoe
         foreach(GameObject coreShape in _coreShapes)
         {
             Color _newColor = coreShape.GetComponent<SpriteRenderer>().color;
             coreShapeColors.Add(_newColor);
         }
 
+        //Choose Pellet Shape
         chosenPellet = Pellets[pelletID];
 
+        //Load In Pellets
         PoolPellets();
     }
 
@@ -58,13 +51,6 @@ public class SpawnManager : MonoBehaviour {
 
         InvokeRepeating("SpawnPellets", 0.5F, 0.5F);
     }
-	
-	// Update is called once per frame
-	void Update () {
-
-       
-	
-	}
 
     void SpawnPellets()
     {

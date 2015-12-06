@@ -47,8 +47,7 @@ public class ScrollingMenu : MonoBehaviour {
 		{
 			if (_minDistance == distance[j])
 			{
-				minTextNum = j;
-				
+				minTextNum = j;				
 				//Determines what object has been chosen
 				objectID = j;
 			}
