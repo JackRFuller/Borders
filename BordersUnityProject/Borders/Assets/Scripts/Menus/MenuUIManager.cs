@@ -22,7 +22,7 @@ public class MenuUIManager : MonoBehaviour {
 
     public void UpdateCoins(int _numOfCoins)
     {
-        coinText.text = _numOfCoins + "x";
+        //coinText.text = _numOfCoins + "x";
     }
 
     public void TurnOffUIToStartGame()
