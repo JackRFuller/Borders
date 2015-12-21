@@ -85,6 +85,8 @@ public class SpawnManager : MonoBehaviour {
         } 
     }
 
+    #region Modifiers
+
     Vector3 DetermineSize()
     {
         float _newSize = Random.Range(0.1F, 0.3F);
@@ -115,5 +117,19 @@ public class SpawnManager : MonoBehaviour {
     {
         int _numToSpawn = Random.Range(0, 2);
         return _numToSpawn;
+    }
+
+    #endregion
+
+    public void TurnOffAllPellets()
+    {
+        CancelInvoke("SpawnPellets");
+
+        for(int i = 0; i < pooledPellets.Count; i++)
+        {            
+            Destroy(pooledPellets[i]);
+        }
+
+        pooledPellets.Clear();
     }
 }

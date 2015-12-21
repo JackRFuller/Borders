@@ -50,7 +50,7 @@ public class LevelSetupManager : ShapeData {
         StartCoroutine(GameLoadUpSequence());      
     }
 
-    IEnumerator GameLoadUpSequence()
+    public IEnumerator GameLoadUpSequence()
     {
         imScript.FindCoreShape(loadedCoreShape);
 
@@ -71,7 +71,13 @@ public class LevelSetupManager : ShapeData {
 
         //Start Game
         lmScript.StartLevel();
+    }
 
+    public void LoadInLevelSelect()
+    {
+        uiScript.TurnOffGameUI();
+        Destroy(loadedCoreShape);
+        removeUI.Play("Level Select Drop Down");
     }
 
     GameObject CoreShapeToSpawn()

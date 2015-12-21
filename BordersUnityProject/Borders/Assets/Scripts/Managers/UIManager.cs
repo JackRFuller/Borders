@@ -16,6 +16,12 @@ public class UIManager : MonoBehaviour {
     [Header("Score")]
     [SerializeField] private Text scoreText;
 
+    [Header("Game Over Panel")]
+    [SerializeField] private Text finalScoreText;
+    [SerializeField] private Animation gameOverPanel;
+    public Transform[] gameOverPanels;
+    private Vector3[] initialPanelPos = new Vector3[3];
+
     //Lerping Variables
     private float timeTakenDuringLerp = 1F;
     private float distanceToMove;
@@ -26,6 +32,13 @@ public class UIManager : MonoBehaviour {
 
     private float timeStartedLerping;
 
+    void Start()
+    {
+        for(int i = 0; i < gameOverPanels.Length; i++)
+        {
+            initialPanelPos[i] = gameOverPanels[i].localPosition;
+        }
+    }
 
     public void InitialiseData(LevelManager _lmScript)
     {
@@ -87,8 +100,31 @@ public class UIManager : MonoBehaviour {
         scoreText.text = _score.ToString("F0");
     }
 
+    public void FinalScoreUpdate(float _score)
+    {
+        finalScoreText.text = _score.ToString("F0");
+    }
+
     public void TurnOnGameUI()
     {
         gameUI.SetActive(true);
+    }
+
+    public void TurnOffGameUI()
+    {
+        gameUI.SetActive(false);
+    }
+        
+    public void ResetHealthBar()
+    {
+        healthBar.fillAmount = 1;
+    }
+
+    public void ReserGameOverPanel()
+    {
+        for (int i = 0; i < gameOverPanels.Length; i++)
+        {
+             gameOverPanels[i].localPosition = initialPanelPos[i];
+        }
     }
 }

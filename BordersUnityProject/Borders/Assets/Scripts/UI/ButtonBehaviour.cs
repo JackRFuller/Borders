@@ -29,7 +29,8 @@ public class ButtonBehaviour : MonoBehaviour {
     public void ButtonUp()
     {
         buttonInner.color = transitionalColors[1];
-        buttonIcon.color = transitionalColors[0];
+        buttonIcon.color = transitionalColors[0
+            ];
         buttonText.color = transitionalColors[0];
     }
 	

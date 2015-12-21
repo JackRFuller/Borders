@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour {
     private UIManager uiScript;
 
     //Score Timer
-    private float score = 0;
+    public float score = 0;
     private float timer = 1;
 
     private bool setupData;
@@ -50,6 +50,12 @@ public class ScoreManager : MonoBehaviour {
         startValue = score;
         endValue = score + _pointsToAddOn;
     } 
+
+    public void ResetScore()
+    {
+        score = 0;
+        uiScript.ScoreUpdate(score);
+    }
 
     void LerpScore()
     {
