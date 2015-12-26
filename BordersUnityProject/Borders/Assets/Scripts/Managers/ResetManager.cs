@@ -18,7 +18,8 @@ public class ResetManager : MonoBehaviour {
     {
         smScript.ResetScore();
         uiScript.ResetHealthBar();
-        uiScript.ReserGameOverPanel();
+        uiScript.ResetCombobar();
+        uiScript.ResetGameOverPanel();
         spmScript.TurnOffAllPellets();
     }
 

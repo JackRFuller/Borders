@@ -16,10 +16,18 @@ public class SpawnManager : MonoBehaviour {
     List<GameObject> pooledPellets = new List<GameObject>();
     [SerializeField] private Transform pelletHolder;
 
+    [Header("HealthPellets")]
+    public GameObject healthPellet;
+    [SerializeField] private float healthPelletsToSpawn;
+    List<GameObject> pooledHealthPellets = new List<GameObject>();
+
     [Header("SpawnPoints")]
     public Transform[] spawnPoints;
     private bool spawnPellets = true;
     private List<Color> coreShapeColors = new List<Color>();
+
+    [Header("Spawn Frequencies")]
+    [SerializeField] private int[] spawnFrequencies;
 
     public void InitialiseData()
     {
@@ -49,19 +57,63 @@ public class SpawnManager : MonoBehaviour {
             pellet.transform.parent = pelletHolder;
         }
 
-        InvokeRepeating("SpawnPellets", 0.5F, 0.5F);
+        InvokeRepeating("DeterminePelletsToSpawn", 0.5F, 0.5F);
     }
 
-    void SpawnPellets()
+    void PoolHealthPellets()
+    {
+        for(int i = 0; i < healthPelletsToSpawn; i++)
+        {
+            GameObject _healthPellet = (GameObject)Instantiate(chosenPellet);
+            _healthPellet.SetActive(false);
+            pooledHealthPellets.Add(_healthPellet);
+            _healthPellet.transform.parent = pelletHolder;
+        }
+    }
+
+    void DeterminePelletsToSpawn()
+    {
+        int _randomNum = Random.Range(0, 100);
+
+        if(_randomNum <= spawnFrequencies[0])
+        {
+            SpawnInCorePellets();
+        }
+
+        if (_randomNum > spawnFrequencies[0] && _randomNum <= spawnFrequencies[1])
+        {
+            SpawnInCorePellets();
+        }
+
+    }    
+
+    void SpawnInHealthPellets()
+    {
+        int _spawnPoint = ChooseSpawnPoint();
+        Color _chosenColor = ChooseColor();
+
+        for(int i = 0; i < pooledHealthPellets.Count; i++)
+        {
+            if (!pooledHealthPellets[i].activeInHierarchy)
+            {
+                pooledHealthPellets[i].transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().color = _chosenColor;
+
+
+                break;
+            }
+        }
+    }
+
+    void SpawnInCorePellets()
     {
         int _spawnPoint = ChooseSpawnPoint();
         int _numberToSpawn = PelletsToSpawn();
-        Color _chosenColor = ChooseColor();    
-        
-        for(int i = 0; i < _numberToSpawn; i++)
+        Color _chosenColor = ChooseColor();
+
+        for (int i = 0; i < _numberToSpawn; i++)
         {
 
-            for(int j = 0; j < pooledPellets.Count; j++)
+            for (int j = 0; j < pooledPellets.Count; j++)
             {
                 if (!pooledPellets[j].activeInHierarchy)
                 {
@@ -80,9 +132,9 @@ public class SpawnManager : MonoBehaviour {
                     pooledPellets[j].SetActive(true);
                     break;
                 }
-                
+
             }
-        } 
+        }
     }
 
     #region Modifiers

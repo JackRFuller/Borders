@@ -6,12 +6,17 @@ public class UIManager : MonoBehaviour {
 
     [Header("Managers")]
     [SerializeField] private LevelManager lmScript;
+    [SerializeField] private ComboManager cmScript;
 
     [Header("Core UI")]
-    [SerializeField] private GameObject gameUI;
+    [SerializeField] private GameObject gameUI;   
 
     [Header("Health")]
-    [SerializeField] private Image healthBar;   
+    [SerializeField] private Image healthBar;  
+    
+    [Header("Combo")]
+    [SerializeField] private Image comboBar; 
+    [SerializeField] private Text comboText; 
     
     [Header("Score")]
     [SerializeField] private Text scoreText;
@@ -22,15 +27,22 @@ public class UIManager : MonoBehaviour {
     public Transform[] gameOverPanels;
     private Vector3[] initialPanelPos = new Vector3[3];
 
-    //Lerping Variables
+    //Lerping Variables (Health Bar)
     private float timeTakenDuringLerp = 1F;
     private float distanceToMove;
     private bool isLerping;
-
     private float startValue;
     private float endValue;
-
     private float timeStartedLerping;
+
+    //Lerping Variables (Combo Bar)
+    private float timeTakenForLerp = 1F;
+    private float movingDistance;
+    private bool comboBarIsLerping;
+    private float startPoint;
+    private float endPoint;
+    private float timeBeginningLerping;
+    private bool addedCombo;
 
     void Start()
     {
@@ -51,6 +63,11 @@ public class UIManager : MonoBehaviour {
         if (isLerping)
         {
             HealthBarLerp();
+        }
+
+        if (comboBarIsLerping)
+        {
+            LerpComboBar();
         }
 	
 	}
@@ -95,6 +112,36 @@ public class UIManager : MonoBehaviour {
         }
     }
 
+    void LerpComboBar()
+    {
+        float _timeSinceStarted = Time.time - timeBeginningLerping;
+        float _percentageComplete = _timeSinceStarted / timeTakenForLerp;
+       
+        comboBar.fillAmount = Mathf.Lerp(startPoint, endPoint, _percentageComplete);        
+       
+        if (comboBar.fillAmount == 1)
+        {
+            IncreaseCombo();
+            comboBarIsLerping = false;
+        }
+
+        if (_percentageComplete >= 1.0F)
+        {
+            comboBarIsLerping = false;
+        }
+    }
+
+    void IncreaseCombo()
+    {       
+        if (cmScript.comboMultiplier < cmScript.pelletHitsNeeded.Length)
+        {
+            cmScript.comboMultiplier++;
+            Debug.Log(cmScript.comboMultiplier);
+            comboText.text = "x" + (cmScript.comboMultiplier).ToString();
+            comboBar.fillAmount = 0;
+        }        
+    }
+
     public void ScoreUpdate(float _score)
     {
         scoreText.text = _score.ToString("F0");
@@ -107,12 +154,13 @@ public class UIManager : MonoBehaviour {
 
     public void TurnOnGameUI()
     {
-        gameUI.SetActive(true);
+        gameUI.SetActive(true);        
     }
 
     public void TurnOffGameUI()
     {
         gameUI.SetActive(false);
+        
     }
         
     public void ResetHealthBar()
@@ -120,7 +168,23 @@ public class UIManager : MonoBehaviour {
         healthBar.fillAmount = 1;
     }
 
-    public void ReserGameOverPanel()
+    public void IncreaseComboBar(float _increasedFillAmount)
+    {
+        startPoint = comboBar.fillAmount;
+        endPoint = comboBar.fillAmount += _increasedFillAmount;
+
+        comboBarIsLerping = true;
+        timeBeginningLerping = Time.time;
+    }
+
+    public void ResetCombobar()
+    {
+        comboBar.fillAmount = 0;
+        comboBarIsLerping = false;
+        comboText.text = "";
+    }
+
+    public void ResetGameOverPanel()
     {
         for (int i = 0; i < gameOverPanels.Length; i++)
         {

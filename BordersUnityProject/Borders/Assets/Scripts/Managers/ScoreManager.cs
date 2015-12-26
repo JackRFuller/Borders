@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour {
     //Managers
     private LevelManager lmScript;
     private UIManager uiScript;
+    [SerializeField] private ComboManager cmScript;
 
     //Score Timer
     public float score = 0;
@@ -48,7 +49,7 @@ public class ScoreManager : MonoBehaviour {
         timeStartedLerping = Time.time;
 
         startValue = score;
-        endValue = score + _pointsToAddOn;
+        endValue = score + (_pointsToAddOn * cmScript.comboMultiplier);
     } 
 
     public void ResetScore()
